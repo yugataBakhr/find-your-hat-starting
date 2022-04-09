@@ -6,9 +6,20 @@ const hole = 'O';
 const fieldCharacter = '░';
 const pathCharacter = '*';
 
+// where the player starts from
+let startX = 0;
+let startY = 0;
+
 // where the player is currently at
 let x = 0;
 let y = 0;
+
+// where the hat is at
+let hatX = 0;
+let hatY = 0;
+
+// game round
+let round = 1;
 
 // array to push field data
 const parentArray = [];
@@ -77,9 +88,35 @@ generatePathAndHat = () => {
     // update where the player is at
     x = startNum1;
     y = startNum2;
+    // update where the player starts from
+    startX = startNum1;
+    startY = startNum2;
+    // update where the hat is at
+    hatX = hatNum1;
+    hatY = hatNum2;
 }
 
 generatePathAndHat();
+
+// generate holes
+generateHoles = () => {
+        let ranHori = Math.floor(Math.random() * horizontal);
+        let ranVert = Math.floor(Math.random() * vertical);
+
+        if(firstField._field[ranVert][ranHori] !== firstField._field[hatY][hatX] && 
+            firstField._field[ranVert][ranHori] !== firstField._field[startY][startX]){
+
+            firstField._field[ranVert][ranHori] = hole;
+
+        } else {
+            ;
+        }
+}
+
+// make holes randomly
+for(let i = 0; i < 2; i++){
+    generateHoles();
+}
 
 /// game進行部分
 let gameFlag = false;
@@ -90,7 +127,17 @@ toggleGameFlag = () => {
 
 while(!gameFlag){
     // initializing field
+    firstField._field[y][x] = pathCharacter;
     firstField.print();
+    console.log(round);
+
+    // generate holes
+    if(round >= 3){
+        generateHoles();
+    } else {
+        ;
+    }
+
     // tell the player where you at
     console.log(`You are at x: ${x}, y: ${y}.`);
     console.log("x.length = " + horizontal);
@@ -118,18 +165,20 @@ while(!gameFlag){
         default:
             console.log("Error! You have to press either 'w', 's', 'a', 'd'.");
     }
-
-    firstField._field[y][x] = pathCharacter;
     
     // see if the game goes on or game over
-    if(firstField._field[y][x] == firstField._field[hatNum2][hatNum1]) {
+    if(x == hatNum1 && y == hatNum2) {
         console.log("Congrats! You found the hat!");
         toggleGameFlag();
     } else if(0 > x || x >= horizontal || 0 > y || y >= vertical) {
         console.log("You got lost yourself in dark. Game Over.");
         toggleGameFlag();
+    } else if(firstField._field[y][x] == hole) {
+        console.log("You just fell into a hole. Game Over.");
+        toggleGameFlag();
     } else {
-        ;
+        round++;
     }
+
     console.log("GameFlag is now... " + gameFlag);
 }
