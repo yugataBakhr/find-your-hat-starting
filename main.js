@@ -179,6 +179,4 @@ while(!gameFlag){
     } else {
         round++;
     }
-
-    console.log("GameFlag is now... " + gameFlag);
 }
